@@ -2,36 +2,41 @@ N,M = map(int,input().split()) # N,M은 격자 사이즈 세로/가로
 y,x,d = map(int,input().split()) # y,x의 현재 좌표 / d는 바라보는 방향
 
 graph = [list(map(int,input().split())) for _ in range(N)]
+visited = [[False]*M for _ in range(N)]
 
-dx = [0,1,0,-1]
-dy = [1,0,-1,0] # 북 동 남 서
-cnt,haha = 1,0
+dx = [0,-1,0,1]
+dy = [1,0,-1,0] # 북 서 남 동  // 왼쪽으로 고개 돌리는 거임
 
-def search(y,x,d):
-    global cnt,haha
+cnt,gogae = 1,0
+
+def search(y,x):
+    global cnt,gogae
     for i in range(4):
-        ny = y+dy[(d+3)%4] # d=0 -> 3 d=1 ->0  / d=2 -> 1  / d=3 ->2  왼쪽으로 고개돌리는중
-        nx = x+dx[(d+3)%4]
-
-    # 조건 1 : 현재 위치에서 현재 방향 기준 왼쪽에 미방문 지역
+        ny = y+dy[(d+1)%4]
+        nx = x+dx[(d+1)%4] # 고개 돌리는거임 왼쪽으로
         if 0<=ny<N and 0<=nx<M:
-            if graph[ny][nx] == 0:
-                graph[ny][nx] = -1 # 방문했다는 표시
+            if not visited[ny][nx] and graph[ny][nx]==0:
+                visited[ny][nx] = True # 방문해요옷
+                cnt+=1
+                gogae+=1
                 y = ny
-                x = nx # 위치 갱신
-        
-        # 조건 2 : 현재 위치에서 현재 방향 기준 왼쪽에 방문 지역
-        if 0<=ny<N and 0<=nx<M:
-            if graph[ny][nx] == -1: # 방문했다면?
-                haha+=1 # 고개 돌린 횟수 카운팅
-                if haha==4:
-                    y=ny-dy[d]
-                    x=nx-dx[d] # 고개 돌리지말고 빠꾸함
-                    if graph[y][x] == 1: # 바다라면?
+                x = nx # 좌표 갱신
+            elif visited[ny][nx] == True or graph[ny][nx]==1:
+                gogae+=1
+                if gogae==4: # 4방향 다 돌았는디 ㅠ
+                    ny = y-dy[d]
+                    nx = x-dx[d] # 방향 유지한 채로 뒤로가쟈
+                    if graph[ny][nx] == 1: # 바다인 경우
                         break
-        
-    return graph
     
-if graph[y][x]==0:
-    graph[y][x] = -1
-    print(search(y,x,d))
+    return cnt
+        
+
+for col in range(N):
+    for row in range(M):
+        if graph[col][row] == 0 and not visited[col][row]:
+            graph[col][row] == -1
+            visited[col][row] = True
+            a = search(col,row)
+
+print(a)
