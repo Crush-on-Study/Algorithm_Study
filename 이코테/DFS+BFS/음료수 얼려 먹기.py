@@ -1,5 +1,3 @@
-# DFS 풀이 추가 예정
-
 import sys
 sys.stdin = open("111.txt")
 from collections import deque
@@ -11,6 +9,38 @@ dx = [1,0,-1,0]
 dy = [0,1,0,-1]
 
 cnt = 0
+
+
+# DFS 
+def dfs_solution():
+    def dfs(y,x):
+        global cnt
+        for i in range(4):
+            ny = y+dy[i]
+            nx = x+dx[i]
+            if 0>ny or ny>=N or 0>nx or nx>=M:
+                continue
+
+            if graph[ny][nx] == 0 and not visited[ny][nx]:
+                visited[ny][nx] = True
+                cnt+=1
+                dfs(ny,nx)
+
+        return cnt
+
+    arr = []
+
+    for col in range(N):
+        for row in range(M):
+            if graph[col][row] == 0 and not visited[col][row]:
+                visited[col][row] = True
+                cnt = 1
+                a = dfs(col,row)
+                arr.append(a)
+
+    print(len(arr))
+    
+dfs_solution()
 
 # BFS 풀이
 def bfs_solution():
